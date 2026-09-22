@@ -1,4 +1,0 @@
-- generic [active] [ref=e1]:
-  - button "Open the card" [ref=e2] [cursor=pointer]:
-    - generic [ref=e6]: open me
-  - generic "Walkabout pages" [ref=e8]

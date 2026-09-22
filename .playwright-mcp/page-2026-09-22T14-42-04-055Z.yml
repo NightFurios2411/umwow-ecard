@@ -1,2 +1,0 @@
-- button "Open the card" [ref=f1e2] [cursor=pointer]:
-  - generic [ref=f1e6]: open me

@@ -1,0 +1,4 @@
+- generic [active] [ref=f3e1]:
+  - button "Open the card" [ref=f3e2] [cursor=pointer]:
+    - generic [ref=f3e6]: open me
+  - generic "Invitation pages" [ref=f3e8]

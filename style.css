@@ -97,8 +97,8 @@ body {
 .env-inner {
   position: relative;
   display: block;
-  width: 240px;
-  height: 158px;
+  width: 288px;
+  height: 190px;
   transition: transform 0.3s ease;
 }
 
@@ -119,9 +119,9 @@ body {
   left: 0;
   width: 0;
   height: 0;
-  border-left: 120px solid transparent;
-  border-right: 120px solid transparent;
-  border-top: 88px solid var(--env-flap);
+  border-left: 144px solid transparent;
+  border-right: 144px solid transparent;
+  border-top: 106px solid var(--env-flap);
   transform-origin: top center;
   transition: transform 0.55s ease;
   filter: drop-shadow(0 -2px 3px rgba(30, 60, 100, 0.15));
@@ -137,7 +137,10 @@ body {
   font-style: italic;
   letter-spacing: 0.12em;
   white-space: nowrap;
-  opacity: 0.75;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 6px 14px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(30, 60, 100, 0.25);
   animation: hintPulse 2.4s ease-in-out infinite;
 }
 
@@ -161,61 +164,74 @@ body {
   pointer-events: none;
 }
 
-/* ============ Greeting card ============ */
+/* ============ Greeting cards (index spread) ============ */
 .card {
   position: fixed;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  top: 50%;
   z-index: 10;
-  width: var(--card-w);
-  height: var(--card-h);
   opacity: 0;
   transition: opacity 0.5s ease;
 }
 
 .card.visible { opacity: 1; }
 
-.page {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 50%;
+/*
+ * The two images are independent cards; on desktop each is sized to one
+ * half of the spread and parked below the viewport until the card opens.
+ */
+/* +1px bleed hides the subpixel seam between the two composited halves */
+.card--1 {
+  width: calc(var(--card-w) / 2 + 1px);
+  height: var(--card-h);
+  left: calc(50% - var(--card-w) / 4);
+  border-radius: 8px 0 0 8px;
   overflow: hidden;
-  will-change: transform;
+  transform: translate(calc(-50% + 15vw), calc(-50% + 118vh)) scale(1.45);
+}
+
+.card--2 {
+  width: calc(var(--card-w) / 2);
+  height: var(--card-h);
+  left: calc(50% + var(--card-w) / 4);
+  border-radius: 0 8px 8px 0;
+  overflow: hidden;
+  transform: translate(calc(-50% - 13vw), calc(-50% + 118vh)) scale(1.45);
+}
+
+.card--1,
+.card--2 {
   box-shadow:
     0 10px 20px rgba(0, 0, 0, 0.28),
     0 36px 80px rgba(0, 0, 0, 0.35);
+  will-change: transform;
 }
 
-/* Pages park below the viewport until the card opens. */
-.page-left  { left: 0; border-radius: 8px 0 0 8px; transform: translate(15vw, 118vh) scale(1.45); }
-.page-right { right: 0; border-radius: 0 8px 8px 0; transform: translate(-13vw, 118vh) scale(1.45); }
-
 /*
- * Choreography: each page grows from 0 at the center, holds for reading
+ * Choreography: each card grows from 0 at the center, holds for reading
  * (page1 until 42%, page2 until 65%), then slides to its side while
  * shrinking to final size. Page 2 starts growing as page 1 slides away
  * (4.5s in) so there is no dead gap between the two.
+ * Transforms carry the -50% centering because these are top-level cards.
  */
-.card.open .page-left  { animation: page-in-left 6s both; }
-.card.open .page-right { animation: page-in-right 7s 5s both; }
+.card--1.open { animation: card-in-left 6s both; }
+.card--2.open { animation: card-in-right 7s 5s both; }
 
-@keyframes page-in-left {
-  0%   { transform: translate(15vw, 0) scale(0); animation-timing-function: cubic-bezier(0.7, 0, 0.35, 1); }
-  25%  { transform: translate(15vw, 0) scale(1.25); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
-  42%  { transform: translate(15vw, 0) scale(1.25); }
-  100% { transform: translate(0, 0)    scale(1); }
+@keyframes card-in-left {
+  0%   { transform: translate(calc(-50% + 15vw), -50%) scale(0); animation-timing-function: cubic-bezier(0.7, 0, 0.35, 1); }
+  25%  { transform: translate(calc(-50% + 15vw), -50%) scale(1.25); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
+  42%  { transform: translate(calc(-50% + 15vw), -50%) scale(1.25); }
+  100% { transform: translate(-50%, -50%) scale(1); }
 }
 
-@keyframes page-in-right {
-  0%   { transform: translate(-13vw, 0) scale(0); animation-timing-function: cubic-bezier(0.7, 0, 0.35, 1); }
-  22%  { transform: translate(-13vw, 0) scale(1.25); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
-  65%  { transform: translate(-13vw, 0) scale(1.25); }
-  100% { transform: translate(0, 0)     scale(1); }
+@keyframes card-in-right {
+  0%   { transform: translate(calc(-50% - 13vw), -50%) scale(0); animation-timing-function: cubic-bezier(0.7, 0, 0.35, 1); }
+  22%  { transform: translate(calc(-50% - 13vw), -50%) scale(1.25); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
+  65%  { transform: translate(calc(-50% - 13vw), -50%) scale(1.25); }
+  100% { transform: translate(-50%, -50%)     scale(1); }
 }
 
-.page img {
+.card img {
   display: block;
   width: 100%;
   height: 100%;
@@ -260,3 +276,58 @@ body {
     border-top-width: 72px;
   }
   }
+
+/* ============ Mobile deck (index) ============
+   Scoped under #mobileView, which Tailwind shows only below md (768px).
+   The two cards become full-width snap pages of a swipe deck. */
+#mobileView .pager {
+  display: flex;
+  width: 100vw;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+}
+
+#mobileView .pager.locked { overflow-x: hidden; }
+
+#mobileView .card {
+  position: static;
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+#mobileView .card--1,
+#mobileView .card--2 {
+  left: auto;
+  transform: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+  will-change: auto;
+  scroll-snap-align: center;
+}
+
+#mobileView .card--1 img,
+#mobileView .card--2 img {
+  width: min(86vw, calc(72vh / 3 * 2));
+  height: auto;
+  aspect-ratio: 2 / 3;
+  border-radius: 8px;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.28),
+    0 36px 80px rgba(0, 0, 0, 0.35);
+}
+
+/* Card 1 rises from scale 0 without a full-size flash (opacity 0 until
+   .visible). Card 2 gets no rise: the deck slide brings it in from the right. */
+#mobileView .card--1.visible { animation: card-rise-m 3s both; }
+
+@keyframes card-rise-m {
+  0%   { transform: scale(0); animation-timing-function: cubic-bezier(0.7, 0, 0.35, 1); }
+  50%  { transform: scale(1.1); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
+  100% { transform: scale(1); }
+}

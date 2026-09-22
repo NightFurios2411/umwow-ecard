@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You're Invited</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sliding text background strips -->
+  <div class="btext" aria-hidden="true">
+    <div class="btext-row btext-row--l"><div class="btext-track"><div class="btext-half"></div><div class="btext-half"></div></div></div>
+    <div class="btext-row btext-row--r"><div class="btext-track"><div class="btext-half"></div><div class="btext-half"></div></div></div>
+    <div class="btext-row btext-row--l"><div class="btext-track"><div class="btext-half"></div><div class="btext-half"></div></div></div>
+    <div class="btext-row btext-row--r"><div class="btext-track"><div class="btext-half"></div><div class="btext-half"></div></div></div>
+    <div class="btext-row btext-row--l"><div class="btext-track"><div class="btext-half"></div><div class="btext-half"></div></div></div>
+    <div class="btext-row btext-row--r"><div class="btext-track"><div class="btext-half"></div><div class="btext-half"></div></div></div>
+  </div>
+
+  <!-- Black overlay fades in when the card opens -->
+  <div id="bgOverlay" class="bg-overlay" aria-hidden="true"></div>
+
+  <!-- Envelope -->
+  <button id="envelope" class="envelope" type="button" aria-label="Open the card">
+    <span class="env-inner">
+      <span class="env-body"></span>
+      <span class="env-flap"></span>
+    </span>
+    <span class="env-hint">open me</span>
+  </button>
+
+  <!-- Greeting card spread -->
+  <div id="card" class="card" aria-hidden="true">
+    <div class="page page-left">
+      <img src="media/page1.jpeg" alt="Card page one" draggable="false">
+    </div>
+    <div class="page page-right">
+      <img src="media/page2.jpeg" alt="Card page two" draggable="false">
+    </div>
+  </div>
+
+  <!-- Music toggle (visible only after open) -->
+  <button id="musicToggle" class="music-toggle" type="button" aria-label="Toggle music" hidden>
+    <span class="glyph glyph-on">&#9835;</span>
+    <span class="glyph glyph-off">&#9834;</span>
+  </button>
+
+  <audio id="bgAudio" src="media/audio.mp3" loop preload="auto"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

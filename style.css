@@ -1,0 +1,262 @@
+/* ============ Design tokens ============ */
+:root {
+  --btext-opacity: 0.18;   /* sliding text strips opacity, 0 (hidden) to 1 (solid) */
+  --overlay-opacity: 0.3;   /* black overlay on click, 0 (off) to 1 (full black) */
+  --env-body: #5b8ac9;
+  --env-body-dark: #3c6ea8;
+  --env-flap: #7fa6d8;
+  --ink: #2b4a6f;
+  --shadow: rgba(30, 60, 100, 0.3);
+  --card-w: min(92vw, calc(78vh * 1.3325));
+  --card-h: calc(var(--card-w) * 0.75);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #f05b2a;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+/* ============ Sliding text strips ============ */
+.btext {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: var(--btext-opacity);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.btext-row {
+  flex: 1;
+  overflow: hidden;
+}
+
+.btext-track {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  will-change: transform;
+}
+
+.btext-half {
+  width: 50%;
+  height: 100%;
+  background-image: url('media/bg-text.svg');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+}
+
+/* Alternating directions; shifting one half-track = seamless loop. */
+.btext-row--l .btext-track { animation: btext-slide-l 22s linear infinite; }
+.btext-row--r .btext-track { animation: btext-slide-r 22s linear infinite; }
+
+@keyframes btext-slide-l {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes btext-slide-r {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* ============ Click overlay ============ */
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 3s ease;
+}
+
+.bg-overlay.show { opacity: var(--overlay-opacity); }
+
+/* ============ Envelope ============ */
+.envelope {
+  position: fixed;
+  z-index: 20;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  animation: float 3.6s ease-in-out infinite;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.env-inner {
+  position: relative;
+  display: block;
+  width: 240px;
+  height: 158px;
+  transition: transform 0.3s ease;
+}
+
+.envelope:hover .env-inner { transform: scale(1.06) translateY(-5px); }
+.envelope:active .env-inner { transform: scale(0.98); }
+
+.env-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--env-body) 0%, var(--env-body-dark) 100%);
+  box-shadow: 0 18px 34px var(--shadow);
+}
+
+.env-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 120px solid transparent;
+  border-right: 120px solid transparent;
+  border-top: 88px solid var(--env-flap);
+  transform-origin: top center;
+  transition: transform 0.55s ease;
+  filter: drop-shadow(0 -2px 3px rgba(30, 60, 100, 0.15));
+}
+
+.env-hint {
+  position: absolute;
+  top: calc(100% + 18px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--ink);
+  font-size: 14px;
+  font-style: italic;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  opacity: 0.75;
+  animation: hintPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50%      { transform: translateY(-14px) rotate(1.5deg); }
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 0.95; }
+}
+
+/* Envelope open sequence */
+.envelope.opening .env-flap { transform: rotateX(180deg); }
+.envelope.opening { animation: none; }
+
+.envelope.gone {
+  opacity: 0;
+  transform: translateY(-46px) scale(0.9);
+  pointer-events: none;
+}
+
+/* ============ Greeting card ============ */
+.card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: var(--card-w);
+  height: var(--card-h);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.card.visible { opacity: 1; }
+
+.page {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  overflow: hidden;
+  will-change: transform;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.28),
+    0 36px 80px rgba(0, 0, 0, 0.35);
+}
+
+/* Pages park below the viewport until the card opens. */
+.page-left  { left: 0; border-radius: 8px 0 0 8px; transform: translate(15vw, 118vh) scale(1.45); }
+.page-right { right: 0; border-radius: 0 8px 8px 0; transform: translate(-13vw, 118vh) scale(1.45); }
+
+/*
+ * Choreography: each page grows from 0 at the center, holds for reading
+ * (page1 until 42%, page2 until 65%), then slides to its side while
+ * shrinking to final size. Page 2 starts growing as page 1 slides away
+ * (4.5s in) so there is no dead gap between the two.
+ */
+.card.open .page-left  { animation: page-in-left 6s both; }
+.card.open .page-right { animation: page-in-right 7s 5s both; }
+
+@keyframes page-in-left {
+  0%   { transform: translate(15vw, 0) scale(0); animation-timing-function: cubic-bezier(0.7, 0, 0.35, 1); }
+  25%  { transform: translate(15vw, 0) scale(1.25); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
+  42%  { transform: translate(15vw, 0) scale(1.25); }
+  100% { transform: translate(0, 0)    scale(1); }
+}
+
+@keyframes page-in-right {
+  0%   { transform: translate(-13vw, 0) scale(0); animation-timing-function: cubic-bezier(0.7, 0, 0.35, 1); }
+  22%  { transform: translate(-13vw, 0) scale(1.25); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
+  65%  { transform: translate(-13vw, 0) scale(1.25); }
+  100% { transform: translate(0, 0)     scale(1); }
+}
+
+.page img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* ============ Music toggle ============ */
+.music-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 30;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(43, 74, 111, 0.35);
+  border-radius: 50%;
+  background: rgba(238, 244, 251, 0.9);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 14px rgba(30, 60, 100, 0.18);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.music-toggle:hover { transform: scale(1.1); background: #fff; }
+
+.music-toggle .glyph-off { display: none; }
+.music-toggle.muted .glyph-on { display: none; }
+.music-toggle.muted .glyph-off { display: block; }
+
+/* ============ Small screens ============ */
+@media (max-width: 480px) {
+  .env-inner { width: 200px; height: 132px; }
+  .env-flap {
+    border-left-width: 100px;
+    border-right-width: 100px;
+    border-top-width: 72px;
+  }
+  }

@@ -289,6 +289,10 @@ body {
   scroll-snap-type: x mandatory;
 }
 
+/* #mobileView is position:fixed, which forms a stacking context.
+   Raise it above the click overlay (z-5) so the cards are not dimmed. */
+#mobileView { z-index: 10; }
+
 #mobileView .pager.locked { overflow-x: hidden; }
 
 #mobileView .card {

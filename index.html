@@ -31,24 +31,30 @@
     <span class="env-hint">open me</span>
   </button>
 
-  <!-- Desktop view (md+): the two cards as a static landscape spread -->
-  <div id="desktopView" class="hidden md:contents">
+  <!-- Desktop view (md+): the three cards as a static landscape spread -->
+  <div id="desktopView" class="hidden md:contents spread-3">
     <div class="card card--1" aria-hidden="true">
-      <img src="media/page1.jpeg" alt="Card page one" draggable="false">
+      <img src="media/ecard/page1.jpeg" alt="Card page one" draggable="false">
     </div>
     <div class="card card--2" aria-hidden="true">
-      <img src="media/page2.jpeg" alt="Card page two" draggable="false">
+      <img src="media/ecard/page2.jpeg" alt="Card page two" draggable="false">
+    </div>
+    <div class="card card--3" aria-hidden="true">
+      <img src="media/ecard/page3.jpeg" alt="Card page three" draggable="false">
     </div>
   </div>
 
-  <!-- Mobile view (<md): the two cards as a swipe deck -->
+  <!-- Mobile view (<md): the three cards as a swipe deck -->
   <div id="mobileView" class="fixed inset-0 md:hidden">
     <div id="pager" class="pager locked" aria-label="Invitation pages">
       <div class="card card--1" aria-hidden="true">
-        <img src="media/page1.jpeg" alt="Card page one" draggable="false">
+        <img src="media/ecard/page1.jpeg" alt="Card page one" draggable="false">
       </div>
       <div class="card card--2" aria-hidden="true">
-        <img src="media/page2.jpeg" alt="Card page two" draggable="false">
+        <img src="media/ecard/page2.jpeg" alt="Card page two" draggable="false">
+      </div>
+      <div class="card card--3" aria-hidden="true">
+        <img src="media/ecard/page3.jpeg" alt="Card page three" draggable="false">
       </div>
     </div>
   </div>
@@ -59,7 +65,7 @@
     <span class="glyph glyph-off">&#9834;</span>
   </button>
 
-  <audio id="bgAudio" src="media/audio.mp3" loop preload="auto"></audio>
+  <audio id="bgAudio" src="media/ecard/audio.mp3" loop preload="auto"></audio>
 
   <script src="script.js"></script>
 </body>

@@ -9,10 +9,9 @@
   var mobile = window.matchMedia('(max-width: 768px)').matches;
   var view = mobile ? document.getElementById('mobileView') : document.getElementById('desktopView');
   var cards = (view || document).querySelectorAll('.card');
-  var card1 = view ? view.querySelector('.card--1') : null;
-  var card2 = view ? view.querySelector('.card--2') : null;
   var pager = mobile ? document.getElementById('pager') : null;
-  var deck = mobile && pager;   // index in mobile view; walkabout has no pager
+  var deck = mobile && pager;   // both pages use the swipe deck on mobile
+  var has3 = view && view.querySelector('.card--3');
   var opening = false;          // guards against double-trigger mid-animation
   var audioBroken = false;
   var volume = 0.8;             // set the playback level here (0-1)
@@ -44,12 +43,11 @@
 
     if (deck) {
       // Card 1 rises from the center of page 1 (scale 0 -> 1.1 -> 1).
-      // Card 2 is revealed alongside, clipped off-screen by the locked pager,
-      // so it glides in from the right when the deck slides.
+      // Cards 2 and 3 are revealed alongside, clipped off-screen by the locked
+      // pager, so they glide in from the right when the deck slides.
       setTimeout(function () {
         envelope.classList.add('gone');
-        reveal(card1);
-        reveal(card2);
+        cards.forEach(reveal);
         toggle.hidden = false;
       }, 550);
 
@@ -59,10 +57,17 @@
         pager.scrollTo({ left: pager.clientWidth, behavior: 'smooth' });
       }, 4000);
 
+      // Then on to page 3, if there is one (index only; walkabout has two).
+      if (has3) {
+        setTimeout(function () {
+          pager.scrollTo({ left: pager.clientWidth * 2, behavior: 'smooth' });
+        }, 7000);
+      }
+
       // Entrance done: unlock swiping.
       setTimeout(function () {
         pager.classList.remove('locked');
-      }, 4600);
+      }, has3 ? 7600 : 4600);
     } else {
       // 2. Envelope fades/slides away, closed card revealed.
       setTimeout(function () {

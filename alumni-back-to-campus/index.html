@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alumni Back to Campus</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <!-- Layered background (bottom to top): base gradient, drifting pattern, world map -->
+  <div class="bg-layers" aria-hidden="true">
+    <div class="bg-layer bg-layer--1"></div>
+    <div class="bg-layer bg-layer--2"></div>
+    <div class="bg-layer bg-layer--3"></div>
+  </div>
+
+  <!-- Black overlay fades in when the card opens -->
+  <div id="bgOverlay" class="bg-overlay" aria-hidden="true"></div>
+
+  <!-- Envelope -->
+  <button id="envelope" class="envelope" type="button" aria-label="Open the card">
+    <span class="env-inner">
+      <span class="env-body"></span>
+      <span class="env-flap"></span>
+    </span>
+	<div class="env-hint">
+		<span>Bukalah Warkah,<br>Ada Bicara Menanti</span>
+	</div>
+  </button>
+
+  <!-- Desktop view (md+): the two cards as a static landscape spread -->
+  <div id="desktopView" class="hidden md:contents">
+    <div class="card card--1" aria-hidden="true">
+      <img src="../media/alumni-back-to-campus/page1.png" alt="Alumni Back to Campus card one" draggable="false">
+    </div>
+    <div class="card card--2" aria-hidden="true">
+      <img src="../media/alumni-back-to-campus/page2.png" alt="Alumni Back to Campus card two" draggable="false">
+    </div>
+  </div>
+
+  <!-- Mobile view (<md): the two cards as a swipe deck -->
+  <div id="mobileView" class="fixed inset-0 md:hidden">
+    <div id="pager" class="pager locked" aria-label="Alumni Back to Campus pages">
+      <div class="card card--1" aria-hidden="true">
+        <img src="../media/alumni-back-to-campus/page1.png" alt="Alumni Back to Campus card one" draggable="false">
+      </div>
+      <div class="card card--2" aria-hidden="true">
+        <img src="../media/alumni-back-to-campus/page2.png" alt="Alumni Back to Campus card two" draggable="false">
+      </div>
+    </div>
+  </div>
+
+  <!-- Music toggle (visible only after open) -->
+  <button id="musicToggle" class="music-toggle" type="button" aria-label="Toggle music" hidden>
+    <span class="glyph glyph-on">&#9835;</span>
+    <span class="glyph glyph-off">&#9834;</span>
+  </button>
+
+  <audio id="bgAudio" src="../media/alumni-back-to-campus/audio.mp3" loop preload="auto"></audio>
+
+  <script src="../script.js"></script>
+</body>
+</html>

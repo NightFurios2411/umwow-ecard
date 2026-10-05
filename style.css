@@ -5,6 +5,7 @@
   --env-body: #5b8ac9;
   --env-body-dark: #3c6ea8;
   --env-flap: #7fa6d8;
+  --env-cover: url('media/alumni-back-to-campus/env-cover.jpg');
   --ink: #2b4a6f;
   --shadow: rgba(30, 60, 100, 0.3);
   --card-w: min(92vw, calc(78vh * 1.3325));
@@ -72,6 +73,65 @@ body {
   to   { transform: translateX(0); }
 }
 
+/* ============ Layered background (alumni index only) ============
+   Three stacked layers, lowest first. Sits at z-index 0 so it stays
+   below the click overlay (5) and the cards (10). */
+.bg-layers {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  /* ---- Tweakable knobs ---- */
+  --bg2-size: 70vw;      /* bg-2 icon scale (tile width) */
+  --bg2-opacity: 0.3;    /* bg-2 pattern opacity */
+  --bg3-size: 75vw;       /* bg-3 world map scale */
+  --bg3-opacity: 0.6;    /* bg-3 world map opacity */
+}
+
+.bg-layer {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+}
+
+/* 1. Base gradient */
+.bg-layer--1 {
+  z-index: 1;
+  background-image: url('media/alumni-back-to-campus/bg-1.PNG');
+  background-size: cover;
+  background-position: center;
+}
+
+/* 2. Ornament pattern, drifts right to left. One image repeated and
+   shifted by exactly one tile width per loop, so it never jumps.
+   Smaller tile, centered vertically; empty rows above/below are fine. */
+.bg-layer--2 {
+  z-index: 2;
+  opacity: var(--bg2-opacity);
+  background-image: url('media/alumni-back-to-campus/bg-2.PNG');
+  background-size: var(--bg2-size) auto;
+  background-position: 0 center;
+  background-repeat: repeat-x;
+  animation: bg-drift 22s linear infinite;
+}
+
+/* 3. World map, centered */
+.bg-layer--3 {
+  z-index: 3;
+  opacity: var(--bg3-opacity);
+  background-image: url('media/alumni-back-to-campus/bg-3.PNG');
+  background-size: var(--bg3-size);
+  background-position: center;
+}
+
+/* Shift by exactly one bg-2 tile width so the loop is seamless. */
+@keyframes bg-drift {
+  from { background-position: 0 center; }
+  to   { background-position: calc(-1 * var(--bg2-size)) center; }
+}
+
 /* ============ Click overlay ============ */
 .bg-overlay {
   position: fixed;
@@ -112,19 +172,28 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 10px;
-  background: linear-gradient(180deg, var(--env-body) 0%, var(--env-body-dark) 100%);
+  background-image: var(--env-cover);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   box-shadow: 0 18px 34px var(--shadow);
 }
 
+/* Full-size layer clipped to the flap triangle so its cover image lines up
+   exactly with the body behind it. */
 .env-flap {
   position: absolute;
   top: 0;
   left: 0;
-  width: 0;
-  height: 0;
-  border-left: 144px solid transparent;
-  border-right: 144px solid transparent;
-  border-top: 106px solid var(--env-flap);
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(15, 20, 60, 0.16), rgba(15, 20, 60, 0.16)),
+    var(--env-cover);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  clip-path: polygon(0 0, 100% 0, 50% 56%);
   transform-origin: top center;
   transition: transform 0.55s ease;
   filter: drop-shadow(0 -2px 3px rgba(30, 60, 100, 0.15));
@@ -352,11 +421,7 @@ body {
 /* ============ Small screens ============ */
 @media (max-width: 480px) {
   .env-inner { width: 200px; height: 132px; }
-  .env-flap {
-    border-left-width: 100px;
-    border-right-width: 100px;
-    border-top-width: 72px;
-  }
+  .env-flap { clip-path: polygon(0 0, 100% 0, 50% 54.5%); }
   }
 
 /* ============ Mobile deck (index) ============

@@ -5,7 +5,7 @@
   --env-body: #5b8ac9;
   --env-body-dark: #3c6ea8;
   --env-flap: #7fa6d8;
-  --env-cover: url('media/alumni-back-to-campus/env-cover.jpg');
+  --env-cover: url('media/alumni-back-to-campus/env-cover.PNG');
   --ink: #2b4a6f;
   --shadow: rgba(30, 60, 100, 0.3);
   --card-w: min(92vw, calc(78vh * 1.3325));
@@ -76,6 +76,11 @@ body {
 /* ============ Layered background (alumni index only) ============
    Three stacked layers, lowest first. Sits at z-index 0 so it stays
    below the click overlay (5) and the cards (10). */
+
+/* Base fill shown while the background images load (alumni index only).
+   Change this hex to tweak the loading colour. */
+body.page-alumni { background: #1c1e63; }
+
 .bg-layers {
   position: fixed;
   inset: 0;
@@ -123,13 +128,24 @@ body {
   opacity: var(--bg3-opacity);
   background-image: url('media/alumni-back-to-campus/bg-3.PNG');
   background-size: var(--bg3-size);
-  background-position: center;
+  background-position: calc(50% + 18px) center;   /* centered, nudged 20px right */
 }
 
 /* Shift by exactly one bg-2 tile width so the loop is seamless. */
 @keyframes bg-drift {
   from { background-position: 0 center; }
   to   { background-position: calc(-1 * var(--bg2-size)) center; }
+}
+
+/* Mobile view (alumni index). Starts identical to the web values above —
+   tune these here without touching the desktop knobs. */
+@media (max-width: 768px) {
+  .bg-layers {
+    --bg2-size: 280vw;
+    --bg2-opacity: 0.3;
+    --bg3-size: 100vw;
+    --bg3-opacity: 0.6;
+  }
 }
 
 /* ============ Click overlay ============ */
